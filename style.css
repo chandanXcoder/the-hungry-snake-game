@@ -1,28 +1,23 @@
-body {
+body{
   background-image: url('https://wallpapersok.com/images/high/thrilling-adventure-with-green-snake-game-character-bqvxt2p5oibadgqn.webp');
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
   color: #fff;
   font-family: 'Comic Sans MS', cursive, sans-serif;
+  text-align: center;
   margin: 0;
   padding: 0;
-  min-height: 100vh;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
-}
-
-.container {
-  text-align: center;
-  background: rgba(0, 0, 0, 0.4);
-  padding: 30px;
-  border-radius: 15px;
-  backdrop-filter: blur(4px);
+  height: 150vh;
+  width: auto;
 }
 
 h1 {
-  font-size: 2.8em;
+  font-size: 3em;
   margin-bottom: 20px;
   text-shadow: 2px 2px 5px #000;
 }
@@ -30,79 +25,78 @@ h1 {
 canvas {
   border: 5px solid #37f707;
   border-radius: 15px;
-  background-color: rgba(0, 0, 0, 0.3);
-  display: block;
-  margin: 0 auto;
-  max-width: 90vw;
-  height: auto;
+  background-color: rgba(0, 0, 0, 0.2);
+  box-shadow: 0 0 15px #000;
+    width: 80vw;
+    height: 80vh;
 }
 
-/* 🎚 Controls */
 .controls {
   margin-top: 20px;
-  background: rgba(255, 255, 255, 0.15);
+  background: rgba(255, 255, 255, 0.2);
   padding: 10px 20px;
   border-radius: 10px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-wrap: wrap;
-  gap: 15px;
+  box-shadow: 0 0 10px #000;
 }
 
 label {
   font-size: 1.2em;
+  margin-right: 10px;
 }
 
-input[type="number"],
-input[type="range"] {
+input[type="number"] {
+  width: 80px;
+  padding: 5px;
+  font-size: 1em;
   border-radius: 5px;
   border: none;
-  padding: 5px;
 }
 
-/* 🎮 Direction Buttons */
-.mobile-buttons {
-  margin-top: 25px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 10px;
-}
+input[type="range"] {
+  width: 100px;
+  margin-left: 1 }
 
-.mobile-buttons button {
-  width: 60px;
-  height: 60px;
-  font-size: 24px;
-  border: none;
-  border-radius: 10px;
-  background-color: #129feb;
-  color: #fff;
-  cursor: pointer;
-  transition: transform 0.1s ease-in-out;
-}
 
-.mobile-buttons button:active {
-  transform: scale(0.9);
-}
-
-.mobile-buttons div {
-  display: flex;
-  gap: 10px;
-}
-
-/* 📱 Responsive Design */
-@media (max-width: 768px) {
-  h1 {
-    font-size: 2em;
-  }
-
-  .controls {
+  .mobile-buttons {
+    margin-top: 20px;
+    display: flex;
     flex-direction: column;
+    align-items: center;
     gap: 10px;
   }
+  
+  .mobile-buttons button {
+    width: 60px;
+    height: 60px;
+    font-size: 24px;
+    border: none;
+    border-radius: 10px;
+    background-color: #129feb;
+    color: #fff;
+  }
+  
+  .mobile-buttons div {
+    display: flex;
+    gap: 10px;
+  }
+  .container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+  @media (max-width: 600px) {
+    .score-board {
+      font-size: 14px;
+    }
+  }
+  
+
 
   canvas {
-    max-width: 95vw;
+    width: 70vw;   /* पहले 80vw था — अब थोड़ा छोटा */
+    height: 70vw;  /* proportion same रहेगा */
+    max-width: 650px;  /* desktop पर limit */
+    max-height: 500px;
   }
-}
+  

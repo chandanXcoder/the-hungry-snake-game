@@ -2,10 +2,6 @@ const canvas = document.getElementById('game');
 const ctx = canvas.getContext('2d');
 
 const gridSize = 20;
-const gridCount = 30; // 600 / 20 = 30 cells
-canvas.width = gridSize * gridCount;
-canvas.height = gridSize * gridCount;
-
 let snake = [{ x: 10, y: 10 }];
 let direction = 'RIGHT';
 let food = { x: 15, y: 15 };
@@ -25,12 +21,11 @@ const emojis = {
 
 function randomPosition() {
   return {
-    x: Math.floor(Math.random() * gridCount),
-    y: Math.floor(Math.random() * gridCount)
+    x: Math.floor(Math.random() * (canvas.width / gridSize)),
+    y: Math.floor(Math.random() * (canvas.height / gridSize))
   };
 }
 
-// 🎮 Keyboard controls
 document.addEventListener('keydown', e => {
   if (e.key === 'ArrowUp' && direction !== 'DOWN') direction = 'UP';
   if (e.key === 'ArrowDown' && direction !== 'UP') direction = 'DOWN';
@@ -60,14 +55,13 @@ function drawGame() {
   if (direction === 'LEFT') head.x--;
   if (direction === 'RIGHT') head.x++;
 
-  // Game Over check
   if (
-    head.x < 0 || head.x >= gridCount ||
-    head.y < 0 || head.y >= gridCount ||
-    snake.some((s, i) => i !== 0 && s.x === head.x && s.y === head.y)
+    head.x < 0 || head.x >= canvas.width / gridSize ||
+    head.y < 0 || head.y >= canvas.height / gridSize ||
+    snake.some((segment, i) => i !== 0 && segment.x === head.x && segment.y === head.y)
   ) {
     playGameOverSound();
-    alert(`Game Over! Score: ${score}`);
+    alert('Game Over! Score: ' + score);
     resetGame();
     return;
   }
@@ -91,12 +85,16 @@ function drawGame() {
     snake.pop();
   }
 
-  if (powerUpActive && --powerUpTimer <= 0) {
-    powerUpActive = false;
+  if (powerUpActive) {
+    powerUpTimer--;
+    if (powerUpTimer <= 0) {
+      powerUpActive = false;
+    }
   }
 
-  snake.forEach((segment, i) => {
-    drawEmoji(i === 0 ? emojis.head : emojis.body, segment.x, segment.y);
+  snake.forEach((segment, index) => {
+    const emoji = index === 0 ? emojis.head : emojis.body;
+    drawEmoji(emoji, segment.x, segment.y);
   });
 
   ctx.fillStyle = '#fff';
@@ -116,18 +114,19 @@ function resetGame() {
   gameInterval = setInterval(drawGame, parseInt(speedInput.value));
 }
 
-// 🎚 Speed Control
+// Controls
 const speedInput = document.getElementById('speed');
 let gameInterval = setInterval(drawGame, parseInt(speedInput.value));
+
 speedInput.addEventListener('change', () => {
   const speed = parseInt(speedInput.value);
-  if (!isNaN(speed)) {
+  if (!isNaN(speed) && speed >= 50 && speed <= 1000) {
     clearInterval(gameInterval);
     gameInterval = setInterval(drawGame, speed);
   }
 });
 
-// 🔊 Volume Control
+// Volume control
 const volumeInput = document.getElementById('volume');
 const bgMusic = document.getElementById('bg-music');
 const eatSound = document.getElementById('eat-sound');
@@ -135,7 +134,9 @@ const gameoverSound = document.getElementById('gameover-sound');
 
 volumeInput.addEventListener('input', () => {
   const vol = parseFloat(volumeInput.value);
-  [bgMusic, eatSound, gameoverSound].forEach(a => (a.volume = vol));
+  [bgMusic, eatSound, gameoverSound].forEach(audio => {
+    audio.volume = vol;
+  });
 });
 
 document.body.addEventListener('click', () => {
@@ -144,10 +145,11 @@ document.body.addEventListener('click', () => {
 
 window.addEventListener('load', () => {
   bgMusic.volume = parseFloat(volumeInput.value);
-  bgMusic.play().catch(() => console.log('Autoplay prevented.'));
+  bgMusic.play().catch(() => {
+    console.log('Autoplay prevented. User interaction required.');
+  });
 });
 
-// 🎵 Sound Functions
 function playEatSound() {
   eatSound.currentTime = 0;
   eatSound.play();
@@ -155,22 +157,33 @@ function playEatSound() {
 
 function playGameOverSound() {
   gameoverSound.currentTime = 0;
-  gameoverSound.play();
+  gameoverSound.play(1);
 }
 
-// 📱 Mobile Buttons
+function changeDirection(dir) {
+  switch (dir) {
+    case "up": /* move up */ break;
+    case "down": /* move down */ break;
+    case "left": /* move left */ break;
+    case "right": /* move right */ break;
+  }
+}
+
 function changeDirection(dir) {
   if (dir === 'up' && direction !== 'DOWN') direction = 'UP';
-  if (dir === 'down' && direction !== 'UP') direction = 'DOWN';
-  if (dir === 'left' && direction !== 'RIGHT') direction = 'LEFT';
-  if (dir === 'right' && direction !== 'LEFT') direction = 'RIGHT';
+  else if (dir === 'down' && direction !== 'UP') direction = 'DOWN';
+  else if (dir === 'left' && direction !== 'RIGHT') direction = 'LEFT';
+  else if (dir === 'right' && direction !== 'LEFT') direction = 'RIGHT';
 }
 
-// 🚫 Fixed Canvas — no resize distortion
-window.addEventListener("resize", () => {
-  // Keep centered if window resized
-  const parent = canvas.parentElement;
-  parent.style.display = "flex";
-  parent.style.alignItems = "center";
-  parent.style.justifyContent = "center";
-});
+function resizeCanvas() {
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+}
+window.addEventListener("resize", resizeCanvas);
+resizeCanvas(); // पहली बार call करें
+
+canvas.addEventListener("touchstart", handleTouchStart);
+canvas.addEventListener("touchmove", handleTouchMove);
+
+
